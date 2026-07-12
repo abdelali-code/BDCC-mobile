@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6A1B9A</color>
+    <color name="colorPrimaryDark">#4A0072</color>
+    <color name="colorAccent">#9C27B0</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Couleurs par catégorie IMC -->
+    <color name="colorMaigreur">#29B6F6</color>
+    <color name="colorNormal">#66BB6A</color>
+    <color name="colorSurpoids">#FFA726</color>
+    <color name="colorObesiteModeree">#FB8C00</color>
+    <color name="colorObesiteSevere">#E53935</color>
+</resources>

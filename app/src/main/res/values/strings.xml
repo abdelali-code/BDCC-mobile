@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IMC For II-Master BDCC 1</string>
+    <string name="str_subtitle">Quel est votre IMC ?</string>
+    <string name="str_poids">Poids</string>
+    <string name="str_taille">Taille</string>
+    <string name="str_kg">Kg</string>
+    <string name="str_cm">Cm</string>
+    <string name="btn_calculer">Calculer IMC</string>
+    <string name="str_votre_imc_est">Votre IMC est:</string>
+
+    <string name="cat_maigreur">Maigreur</string>
+    <string name="cat_normal">Normal</string>
+    <string name="cat_surpoids">Surpoids</string>
+    <string name="cat_obesite_moderee">Obésité modérée</string>
+    <string name="cat_obesite_severe">Obésité sévère</string>
+</resources>
