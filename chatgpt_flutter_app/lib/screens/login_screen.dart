@@ -12,8 +12,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _authService = AuthService();
   final _usernameController = TextEditingController();
-  final _apiKeyController = TextEditingController();
-  bool _obscureKey = true;
   bool _isLoading = false;
 
   @override
@@ -24,19 +22,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _prefill() async {
     final username = await _authService.getUsername();
-    final apiKey = await _authService.getApiKey();
     if (username != null) _usernameController.text = username;
-    if (apiKey != null) _apiKeyController.text = apiKey;
     if (mounted) setState(() {});
   }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
-    await _authService.login(
-      username: _usernameController.text.trim(),
-      apiKey: _apiKeyController.text.trim(),
-    );
+    await _authService.login(username: _usernameController.text.trim());
     setState(() => _isLoading = false);
     if (!mounted) return;
     Navigator.of(context).pushReplacementNamed('/chat');
@@ -45,7 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void dispose() {
     _usernameController.dispose();
-    _apiKeyController.dispose();
     super.dispose();
   }
 
@@ -87,26 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     validator: (v) =>
                         (v == null || v.trim().isEmpty) ? 'Champ requis' : null,
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _apiKeyController,
-                    obscureText: _obscureKey,
-                    decoration: InputDecoration(
-                      labelText: 'Clé API OpenAI',
-                      prefixIcon: const Icon(Icons.vpn_key_outlined),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                            _obscureKey ? Icons.visibility_off : Icons.visibility),
-                        onPressed: () =>
-                            setState(() => _obscureKey = !_obscureKey),
-                      ),
-                    ),
-                    validator: (v) =>
-                        (v == null || v.trim().isEmpty) ? 'Champ requis' : null,
-                  ),
                   const SizedBox(height: 8),
                   Text(
-                    'Votre clé est stockée localement sur cet appareil uniquement.',
+                    "Vous choisirez votre fournisseur d'IA (OpenAI, Groq, "
+                    "Gemini, Grok...) juste après connexion.",
                     style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                   ),
                   const SizedBox(height: 24),

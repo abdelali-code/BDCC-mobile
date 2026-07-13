@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/message.dart';
+import '../providers/ai_provider.dart';
+import '../providers/provider_registry.dart';
 import '../services/auth_service.dart';
-import '../services/chat_service.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/typing_indicator.dart';
 
@@ -19,23 +20,33 @@ class _ChatScreenState extends State<ChatScreen> {
   final _scrollController = ScrollController();
 
   bool _isTyping = false;
+  AiProvider _provider = aiProviders.first;
+  String _model = aiProviders.first.defaultModel;
   String? _apiKey;
 
   @override
   void initState() {
     super.initState();
-    _init();
+    _loadProviderConfig();
   }
 
-  Future<void> _init() async {
-    _apiKey = await _authService.getApiKey();
+  Future<void> _loadProviderConfig() async {
+    final providerId = await _authService.getSelectedProviderId();
+    _provider = providerById(providerId);
+    _model = await _authService.getModel(providerId);
+    _apiKey = await _authService.getApiKey(providerId);
+
     if (!mounted) return;
     setState(() {
+      _messages.clear();
       _messages.add(
         ChatMessage(
           id: 'welcome',
-          text:
-              'Bonjour ! Je suis votre assistant ChatGPT. Posez-moi une question 🙂',
+          text: (_apiKey == null || _apiKey!.isEmpty)
+              ? 'Bonjour ! Configurez une clé API depuis ⚙️ pour commencer '
+                  '(essayez Groq ou Gemini, gratuits).'
+              : 'Bonjour ! Je suis connecté à ${_provider.displayName} '
+                  '($_model). Posez-moi une question 🙂',
           isUser: false,
         ),
       );
@@ -48,6 +59,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (_apiKey == null || _apiKey!.isEmpty) {
       _showSnack('Veuillez configurer votre clé API dans les paramètres.');
+      _openSettings();
       return;
     }
 
@@ -64,17 +76,16 @@ class _ChatScreenState extends State<ChatScreen> {
     });
     _scrollToBottom();
 
-    final chatService = ChatService(apiKey: _apiKey!);
-    final conversation = [
-      {'role': 'system', 'content': 'Tu es un assistant utile et concis.'},
-      ..._messages.map((m) => {
-            'role': m.isUser ? 'user' : 'assistant',
-            'content': m.text,
-          }),
-    ];
+    // On exclut le message d'accueil local de l'historique envoyé à l'API.
+    final history = _messages.where((m) => m.id != 'welcome').toList();
 
     try {
-      final reply = await chatService.sendMessage(conversation);
+      final reply = await _provider.sendMessage(
+        apiKey: _apiKey!,
+        model: _model,
+        systemPrompt: 'Tu es un assistant utile et concis.',
+        history: history,
+      );
       if (!mounted) return;
       setState(() {
         _messages.add(
@@ -85,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         );
       });
-    } on ChatServiceException catch (e) {
+    } on ProviderException catch (e) {
       if (!mounted) return;
       setState(() {
         _messages.add(
@@ -122,8 +133,9 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _openSettings() async {
     // Navigator.pushNamed() : on empile l'écran de paramètres au-dessus du chat.
     await Navigator.of(context).pushNamed('/settings');
-    // Recharger la clé API au retour, au cas où elle aurait été modifiée.
-    _apiKey = await _authService.getApiKey();
+    // Recharger le fournisseur / la clé / le modèle au retour, au cas où
+    // l'utilisateur en aurait changé.
+    await _loadProviderConfig();
   }
 
   Future<void> _logout() async {
@@ -171,8 +183,17 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ),
-        title:
-            const Text('ChatBot GPT', style: TextStyle(color: Colors.white)),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('ChatBot GPT',
+                style: TextStyle(color: Colors.white, fontSize: 18)),
+            Text(
+              _provider.displayName,
+              style: const TextStyle(color: Colors.white70, fontSize: 11),
+            ),
+          ],
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
@@ -249,8 +270,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   color: Color(0xFF6C63FF),
                   shape: BoxShape.circle,
                 ),
-                child:
-                    const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                child: const Icon(Icons.send_rounded,
+                    color: Colors.white, size: 20),
               ),
             ),
           ],
