@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@android:drawable/sym_def_app_icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/title_click">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false"
+            android:label="@string/title_swipe" />
+
+        <activity
+            android:name=".MainActivity3"
+            android:exported="false"
+            android:label="@string/title_textchange" />
+
+        <activity
+            android:name=".MainActivity4"
+            android:exported="false"
+            android:label="@string/title_itemselected" />
+
+        <activity
+            android:name=".MainActivity5"
+            android:exported="false"
+            android:label="@string/title_touch" />
+
+        <activity
+            android:name=".MainActivity6"
+            android:exported="false"
+            android:label="@string/title_contextmenu_date" />
+
+    </application>
+
+</manifest>

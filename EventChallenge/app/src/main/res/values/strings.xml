@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Event Challenge</string>
+    <string name="title_click">1 - Click / LongClick</string>
+    <string name="title_swipe">2 - Swipe</string>
+    <string name="title_textchange">3 - TextChange</string>
+    <string name="title_itemselected">4 - OnItemSelected</string>
+    <string name="title_touch">5 - OnTouch</string>
+    <string name="title_contextmenu_date">6 - ContextMenu / DatePicker</string>
+    <string name="swipe_hint">Glissez à gauche ou à droite pour naviguer</string>
+</resources>
