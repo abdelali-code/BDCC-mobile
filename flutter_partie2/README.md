@@ -1,6 +1,4 @@
-# Application de Synthèse — Flutter (OFPPT/ENSET, Partie 2)
-
-Reproduction fidèle de l'application présentée dans le support de cours
+# Application de Synthèse 
 « Intro Flutter P2 » : une `HomePage` avec un menu latéral (`Drawer`) qui
 permet de naviguer vers 4 pages : **Counter**, **Contacts**, **Meteo**, **Gallery**.
 
@@ -54,14 +52,3 @@ lib/
    flutter pub get
    flutter run
    ```
-
-## Points clés repris du cours
-
-- **Routes nommées** centralisées dans `GlobalParameters.routes` et
-  utilisées via `Navigator.pushNamed(context, route)`.
-- **Drawer** généré dynamiquement à partir de `GlobalParameters.menus`
-  (titre, route, icône).
-- **CounterPage** = `StatefulWidget` avec deux `FloatingActionButton`
-  (`+` / `-`) qui appellent `setState()` pour redessiner le widget.
-- Les pages `Contacts`, `Meteo`, `Gallery` sont des `StatelessWidget`
-  simples, prêtes à être enrichies (c'était l'exercice "À vous de coder").
